@@ -263,6 +263,7 @@ static void init_paths(void)
     const char *home = getenv( "HOME" );
     const char *user = NULL;
     const char *prefix = getenv( "WINEPREFIX" );
+    const char *wine_user = getenv( "WINEUSER" );
 
 #ifdef HAVE_GETPWUID
     char uid_str[32];
@@ -282,7 +283,15 @@ static void init_paths(void)
     if (!(user = getenv( "USER" )))
         fatal_error( "cannot determine your user name, set the USER environment variable\n" );
 #endif  /* HAVE_GETPWUID */
-    user_name = xstrdup( user );
+
+    if (wine_user)
+    {
+        user_name = xstrdup( wine_user );
+    }
+    else
+    {
+        user_name = xstrdup( user );
+    }
 
     /* build config_dir */
 
