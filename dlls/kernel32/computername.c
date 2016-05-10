@@ -261,11 +261,18 @@ void COMPUTERNAME_Init (void)
         char hbuf[256];
         int hlen = sizeof (hbuf);
         char *dot;
-        TRACE( "retrieving Unix host name\n" );
-        if ( gethostname ( hbuf, hlen ) )
+        const char *wine_computer_name = getenv( "WINECOMPUTERNAME" );
+        if ( wine_computer_name ) {
+            strcpy ( hbuf, wine_computer_name );
+        }
+        else
         {
-            strcpy ( hbuf, default_ComputerName );
-            WARN( "gethostname() error: %d, using host name %s\n", errno, hbuf );
+            TRACE( "retrieving Unix host name\n" );
+            if ( gethostname ( hbuf, hlen ) )
+            {
+                strcpy ( hbuf, default_ComputerName );
+                WARN( "gethostname() error: %d, using host name %s\n", errno, hbuf );
+            }
         }
         hbuf[MAX_COMPUTERNAME_LENGTH] = 0;
         dot = strchr ( hbuf, '.' );
