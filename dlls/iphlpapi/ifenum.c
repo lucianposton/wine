@@ -107,6 +107,9 @@
 
 #define INITIAL_INTERFACES_ASSUMED 4
 
+static char *whitelisted_interface_names = NULL;
+static BOOL whitelisted_interface_names_init = FALSE;
+
 /* Functions */
 
 static BOOL isLoopbackInterface(int fd, const char *name)
@@ -165,6 +168,54 @@ BOOL isIfIndexLoopback(ULONG idx)
   return ret;
 }
 
+static void init_interface_whitelist()
+{
+  whitelisted_interface_names = getenv("WINEINTERFACEWHITELIST");
+  whitelisted_interface_names_init = TRUE;
+}
+
+static BOOL is_interface_name_whitelisted(int fd, const char *name)
+{
+  size_t name_len;
+  const char* wl_ptr;
+
+  // fix this if thread safety required
+  if (!whitelisted_interface_names_init) init_interface_whitelist();
+
+  if (whitelisted_interface_names == NULL)
+      return TRUE;
+
+  if (name == NULL)
+      return FALSE;
+
+  name_len = strlen(name);
+  wl_ptr = whitelisted_interface_names;
+  while ((wl_ptr = strstr(wl_ptr, name)) != NULL) {
+      if ((*(wl_ptr+name_len) == ' ' || *(wl_ptr+name_len) == '\0')
+              && (wl_ptr == whitelisted_interface_names || *(wl_ptr-1) == ' ')) {
+          return TRUE;
+      }
+      wl_ptr++;
+  }
+
+  return FALSE;
+}
+
+static BOOL is_interface_index_whitelisted(ULONG idx)
+{
+  BOOL ret = FALSE;
+  char name[IFNAMSIZ];
+  int fd;
+
+  getInterfaceNameByIndex(idx, name);
+  fd = socket(PF_INET, SOCK_DGRAM, 0);
+  if (fd != -1) {
+    ret = is_interface_name_whitelisted(fd, name);
+    close(fd);
+  }
+  return ret;
+}
+
 #ifdef HAVE_IF_NAMEINDEX
 DWORD get_interface_indices( BOOL skip_loopback, InterfaceIndexTable **table )
 {
@@ -178,6 +229,7 @@ DWORD get_interface_indices( BOOL skip_loopback, InterfaceIndexTable **table )
     for (p = indices; p->if_name; p++)
     {
         if (skip_loopback && isIfIndexLoopback( p->if_index )) continue;
+        if (!is_interface_index_whitelisted(p->if_index)) continue;
         count++;
     }
 
@@ -192,6 +244,7 @@ DWORD get_interface_indices( BOOL skip_loopback, InterfaceIndexTable **table )
         for (p = indices, i = 0; p->if_name && i < count; p++)
         {
             if (skip_loopback && isIfIndexLoopback( p->if_index )) continue;
+            if (!is_interface_index_whitelisted(p->if_index)) continue;
             ret->indexes[i++] = p->if_index;
         }
         ret->numIndexes = count = i;
