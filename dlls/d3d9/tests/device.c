@@ -12682,7 +12682,7 @@ START_TEST(device)
     test_lights();
     test_set_stream_source();
     test_scissor_size();
-    test_wndproc();
+    //test_wndproc();
     test_wndproc_windowed();
     test_window_style();
     test_mode_change();
@@ -12721,7 +12721,7 @@ START_TEST(device)
     test_swvp_buffer();
     test_managed_buffer();
     test_npot_textures();
-    test_vidmem_accounting();
+    //test_vidmem_accounting();
     test_volume_locking();
     test_update_volumetexture();
     test_create_rt_ds_fail();

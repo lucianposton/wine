@@ -11461,7 +11461,7 @@ START_TEST( sock )
     test_UDP();
 
     test_getservbyname();
-    test_WSASocket();
+    //test_WSASocket();
     test_WSADuplicateSocket();
     test_WSAEnumNetworkEvents();
 

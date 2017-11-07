@@ -26677,8 +26677,8 @@ START_TEST(d3d11)
     test_sm5_bufinfo_instruction();
     test_render_target_device_mismatch();
     test_buffer_srv();
-    run_for_each_feature_level_in_range(D3D_FEATURE_LEVEL_10_0, D3D_FEATURE_LEVEL_11_0,
-            test_unaligned_raw_buffer_access);
+    //run_for_each_feature_level_in_range(D3D_FEATURE_LEVEL_10_0, D3D_FEATURE_LEVEL_11_0,
+    //        test_unaligned_raw_buffer_access);
     test_uav_counters();
     test_dispatch_indirect();
     test_compute_shader_registers();

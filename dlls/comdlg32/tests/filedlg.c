@@ -1337,7 +1337,7 @@ START_TEST(filedlg)
     test_create_view_window2();
     test_create_view_template();
     test_arrange();
-    test_resize();
+    //test_resize();
     test_ok();
     test_getfolderpath();
     test_mru();

@@ -1018,5 +1018,5 @@ START_TEST(winstation)
     test_enumdesktops();
     test_handles();
     test_getuserobjectinformation();
-    test_foregroundwindow();
+    //test_foregroundwindow();
 }

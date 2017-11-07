@@ -4489,7 +4489,7 @@ START_TEST (winhttp)
     test_not_modified(si.port);
     test_basic_authentication(si.port);
     test_multi_authentication(si.port);
-    test_large_data_authentication(si.port);
+    //test_large_data_authentication(si.port);
     test_bad_header(si.port);
     test_multiple_reads(si.port);
     test_cookies(si.port);

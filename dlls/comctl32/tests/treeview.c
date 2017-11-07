@@ -2879,7 +2879,7 @@ START_TEST(treeview)
     test_WM_KEYDOWN();
     test_TVS_FULLROWSELECT();
     test_TVM_SORTCHILDREN();
-    test_right_click();
+    //test_right_click();
 
     if (!load_v6_module(&ctx_cookie, &hCtx))
     {

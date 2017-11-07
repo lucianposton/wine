@@ -1265,8 +1265,8 @@ START_TEST(font)
     test_logfont();
     test_fontfamily();
     test_fontfamily_properties();
-    test_getgenerics();
-    test_installedfonts();
+    //test_getgenerics();
+    //test_installedfonts();
     test_heightgivendpi();
     test_GdipGetFontCollectionFamilyList();
 

@@ -223,7 +223,7 @@ static void mouse_tests(void)
         ShowWindow(hwnd, SW_SHOW);
 
         test_set_coop(pDI, hwnd);
-        test_acquire(pDI, hwnd);
+        //test_acquire(pDI, hwnd);
 
         DestroyWindow(hwnd);
     }

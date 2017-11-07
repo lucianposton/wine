@@ -6428,11 +6428,11 @@ static void test_bezier_intersect(void)
 
 START_TEST(d2d1)
 {
-    test_clip();
+    //test_clip();
     test_state_block();
     test_color_brush();
     test_bitmap_brush();
-    test_linear_brush();
+    //test_linear_brush();
     test_radial_brush();
     test_path_geometry();
     test_rectangle_geometry();
@@ -6450,7 +6450,7 @@ START_TEST(d2d1)
     test_desktop_dpi();
     test_stroke_style();
     test_gradient();
-    test_draw_geometry();
+    //test_draw_geometry();
     test_gdi_interop();
     test_layer();
     test_bezier_intersect();
