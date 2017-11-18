@@ -2958,7 +2958,6 @@ static void test_CustomFontCollection_fallback(void)
     ok(hr == S_OK, "got 0x%08x\n", hr);
 
     hr = IDWriteTextLayout_GetMetrics(layout, &metrics);
-    todo_wine
     ok(hr == S_OK, "got 0x%08x\n", hr);
 
     hr = IDWriteFactory_UnregisterFontCollectionLoader(factory, loader);

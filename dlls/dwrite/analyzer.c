@@ -2139,15 +2139,22 @@ static HRESULT WINAPI fontfallback_MapCharacters(IDWriteFontFallback *iface, IDW
     if (length == 0)
         return S_OK;
 
-    if (!basecollection)
-        basecollection = (IDWriteFontCollection*)fallback->systemcollection;
-
     hr = get_text_source_ptr(source, position, length, &text, &buff);
     if (FAILED(hr))
         goto done;
 
     if (basefamily && *basefamily) {
-        hr = create_matching_font(basecollection, basefamily, weight, style, stretch, ret_font);
+        if (basecollection)
+        {
+            hr = create_matching_font(basecollection, basefamily, weight, style, stretch, ret_font);
+        }
+
+        if (!basecollection || FAILED(hr))
+        {
+            hr = create_matching_font((IDWriteFontCollection*)fallback->systemcollection,
+                    basefamily, weight, style, stretch, ret_font);
+        }
+
         if (FAILED(hr))
             goto done;
 
