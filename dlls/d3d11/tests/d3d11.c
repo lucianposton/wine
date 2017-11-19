@@ -9722,7 +9722,6 @@ static void test_clear_state(void)
     instance_count = 100;
     ID3D11DeviceContext_VSGetShader(context, &tmp_vs, NULL, &instance_count);
     ok(!tmp_vs, "Got unexpected vertex shader %p.\n", tmp_vs);
-    todo_wine
     ok(instance_count == 0, "Expected 0 instances, got %u.\n", instance_count);
 
     ID3D11DeviceContext_HSGetConstantBuffers(context, 0, D3D11_COMMONSHADER_CONSTANT_BUFFER_API_SLOT_COUNT,
@@ -9744,7 +9743,6 @@ static void test_clear_state(void)
     instance_count = 100;
     ID3D11DeviceContext_HSGetShader(context, &tmp_hs, NULL, &instance_count);
     ok(!tmp_hs, "Got unexpected hull shader %p.\n", tmp_hs);
-    todo_wine
     ok(instance_count == 0, "Expected 0 instances, got %u.\n", instance_count);
 
     ID3D11DeviceContext_DSGetConstantBuffers(context, 0, D3D11_COMMONSHADER_CONSTANT_BUFFER_API_SLOT_COUNT,
@@ -9766,7 +9764,6 @@ static void test_clear_state(void)
     instance_count = 100;
     ID3D11DeviceContext_DSGetShader(context, &tmp_ds, NULL, &instance_count);
     ok(!tmp_ds, "Got unexpected domain shader %p.\n", tmp_ds);
-    todo_wine
     ok(instance_count == 0, "Expected 0 instances, got %u.\n", instance_count);
 
     ID3D11DeviceContext_GSGetConstantBuffers(context, 0, D3D11_COMMONSHADER_CONSTANT_BUFFER_API_SLOT_COUNT,
@@ -9788,7 +9785,6 @@ static void test_clear_state(void)
     instance_count = 100;
     ID3D11DeviceContext_GSGetShader(context, &tmp_gs, NULL, &instance_count);
     ok(!tmp_gs, "Got unexpected geometry shader %p.\n", tmp_gs);
-    todo_wine
     ok(instance_count == 0, "Expected 0 instances, got %u.\n", instance_count);
 
     ID3D11DeviceContext_PSGetConstantBuffers(context, 0, D3D11_COMMONSHADER_CONSTANT_BUFFER_API_SLOT_COUNT,
@@ -9811,7 +9807,6 @@ static void test_clear_state(void)
     instance_count = 100;
     ID3D11DeviceContext_PSGetShader(context, &tmp_ps, NULL, &instance_count);
     ok(!tmp_ps, "Got unexpected pixel shader %p.\n", tmp_ps);
-    todo_wine
     ok(instance_count == 0, "Expected 0 instances, got %u.\n", instance_count);
 
     ID3D11DeviceContext_CSGetConstantBuffers(context, 0, D3D11_COMMONSHADER_CONSTANT_BUFFER_API_SLOT_COUNT,
@@ -9834,7 +9829,6 @@ static void test_clear_state(void)
     instance_count = 100;
     ID3D11DeviceContext_CSGetShader(context, &tmp_cs, NULL, &instance_count);
     ok(!tmp_cs, "Got unexpected compute shader %p.\n", tmp_cs);
-    todo_wine
     ok(instance_count == 0, "Expected 0 instances, got %u.\n", instance_count);
     ID3D11DeviceContext_CSGetUnorderedAccessViews(context, 0, D3D11_PS_CS_UAV_REGISTER_COUNT, tmp_uav);
     for (i = 0; i < D3D11_PS_CS_UAV_REGISTER_COUNT; ++i)
