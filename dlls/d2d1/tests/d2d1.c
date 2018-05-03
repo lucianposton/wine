@@ -4707,7 +4707,6 @@ static void test_draw_via_ID2D1DeviceContext(void)
     bitmap_properties.bitmapOptions = D2D1_BITMAP_OPTIONS_TARGET | D2D1_BITMAP_OPTIONS_CANNOT_DRAW;
     hr = ID2D1DeviceContext_CreateBitmapFromDxgiSurface(context, dxgi_surface,
             &bitmap_properties, &bitmap);
-    todo_wine
     ok(SUCCEEDED(hr), "Failed to create bitmap, hr %#x.\n", hr);
     if (FAILED(hr))
     {
@@ -4721,10 +4720,8 @@ static void test_draw_via_ID2D1DeviceContext(void)
     ID2D1DeviceContext_BeginDraw(context);
     ID2D1DeviceContext_DrawRectangle(context, &r, (ID2D1Brush *)brush, 1.0f, NULL);
     hr = ID2D1DeviceContext_EndDraw(context, NULL, NULL);
-    todo_wine
     ok(SUCCEEDED(hr), "Failed to draw, hr %#x.\n", hr);
     hr = IDXGISwapChain_Present(swapchain, 0, 0);
-    todo_wine
     ok(SUCCEEDED(hr), "Failed to present image, hr %#x.\n", hr);
 
     ID2D1SolidColorBrush_Release(brush);

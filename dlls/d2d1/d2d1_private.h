@@ -330,7 +330,8 @@ HRESULT d2d_mesh_create(ID2D1Factory *factory, struct d2d_mesh **mesh) DECLSPEC_
 
 struct d2d_bitmap
 {
-    ID2D1Bitmap ID2D1Bitmap_iface;
+    ID2D1Bitmap1 ID2D1Bitmap_iface;
+
     LONG refcount;
 
     ID2D1Factory *factory;
@@ -339,10 +340,15 @@ struct d2d_bitmap
     D2D1_PIXEL_FORMAT format;
     float dpi_x;
     float dpi_y;
+    D2D1_BITMAP_OPTIONS options;
+    ID2D1ColorContext *color_context;
+    IDXGISurface *surface;
 };
 
 HRESULT d2d_bitmap_create(ID2D1Factory *factory, ID3D10Device *device, D2D1_SIZE_U size, const void *src_data,
         UINT32 pitch, const D2D1_BITMAP_PROPERTIES *desc, struct d2d_bitmap **bitmap) DECLSPEC_HIDDEN;
+HRESULT d2d_bitmap_create_shared_from_dxgi_surface(ID2D1Factory *factory, IDXGISurface *surface,
+        const D2D1_BITMAP_PROPERTIES1 *desc, ID3D10Device *target_device, struct d2d_bitmap **bitmap) DECLSPEC_HIDDEN;
 HRESULT d2d_bitmap_create_shared(ID2D1RenderTarget *render_target, ID3D10Device *device, REFIID iid, void *data,
         const D2D1_BITMAP_PROPERTIES *desc, struct d2d_bitmap **bitmap) DECLSPEC_HIDDEN;
 HRESULT d2d_bitmap_create_from_wic_bitmap(ID2D1Factory *factory, ID3D10Device *device, IWICBitmapSource *bitmap_source,

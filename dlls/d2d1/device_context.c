@@ -718,8 +718,28 @@ static HRESULT WINAPI d2d_device_context_CreateBitmapFromDxgiSurface(
         ID2D1Bitmap1 **bitmap)
 {
     struct d2d_device_context *This = impl_from_ID2D1DeviceContext(iface);
-    FIXME("%p stub!\n", This);
-    return E_NOTIMPL;
+    struct d2d_bitmap *bitmap_impl;
+    HRESULT hr;
+    ID2D1Factory *factory;
+
+    TRACE("This %p, surface %p, bitmapProperties %p, bitmap %p.\n",
+            This, surface, bitmapProperties, bitmap);
+    if (surface == NULL || bitmap == NULL)
+        return E_POINTER;
+
+    ID2D1Device_GetFactory(This->device, &factory);
+    hr = d2d_bitmap_create_shared_from_dxgi_surface(factory, surface,
+            bitmapProperties, NULL, &bitmap_impl);
+    ID2D1Factory_Release(factory);
+    if (FAILED(hr))
+    {
+        WARN("Failed to create bitmap, hr %#x.\n", hr);
+        return hr;
+    }
+
+    *bitmap = &bitmap_impl->ID2D1Bitmap_iface;
+
+    return S_OK;
 }
 
 static HRESULT WINAPI d2d_device_context_CreateEffect(
