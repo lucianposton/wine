@@ -567,4 +567,14 @@ static inline const char *debug_d2d_rect_f(const D2D1_RECT_F *rect)
     return wine_dbg_sprintf("(%.8e,%.8e)-(%.8e,%.8e)", rect->left, rect->top, rect->right, rect->bottom );
 }
 
+struct d2d_device
+{
+    ID2D1Device ID2D1Device_iface;
+    LONG refcount;
+    ID2D1Factory1 *factory;
+    IDXGIDevice *dxgi_device;
+};
+
+void d2d_device_init(struct d2d_device *This, ID2D1Factory1 *iface, IDXGIDevice *dxgiDevice) DECLSPEC_HIDDEN;
+
 #endif /* __WINE_D2D1_PRIVATE_H */

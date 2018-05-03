@@ -375,9 +375,18 @@ static HRESULT STDMETHODCALLTYPE d2d_factory_CreateDCRenderTarget(ID2D1Factory1 
 static HRESULT STDMETHODCALLTYPE d2d_factory_CreateDevice(ID2D1Factory1 *iface,
         IDXGIDevice *dxgi_device, ID2D1Device **device)
 {
-    FIXME("iface %p, dxgi_device %p, device %p stub!\n", iface, dxgi_device, device);
+    struct d2d_device *object;
 
-    return E_NOTIMPL;
+    TRACE("iface %p, dxgi_device %p, device %p\n", iface, dxgi_device, device);
+
+    if (!(object = HeapAlloc(GetProcessHeap(), HEAP_ZERO_MEMORY, sizeof(*object))))
+        return E_OUTOFMEMORY;
+
+    d2d_device_init(object, iface, dxgi_device);
+    *device = &object->ID2D1Device_iface;
+    TRACE("Created device %p.\n", object);
+
+    return S_OK;
 }
 
 static HRESULT STDMETHODCALLTYPE d2d_factory_CreateStrokeStyle1(ID2D1Factory1 *iface,

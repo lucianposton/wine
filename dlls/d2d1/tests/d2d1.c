@@ -4684,7 +4684,6 @@ static void test_draw_via_ID2D1DeviceContext(void)
     }
 
     hr = ID2D1Factory1_CreateDevice(factory, dxgi_device, &device);
-    todo_wine
     ok(SUCCEEDED(hr), "Failed to create device, hr %#x.\n", hr);
     if (FAILED(hr))
     {
