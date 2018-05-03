@@ -4693,7 +4693,6 @@ static void test_draw_via_ID2D1DeviceContext(void)
 
     hr = ID2D1Device_CreateDeviceContext(device,
             D2D1_DEVICE_CONTEXT_OPTIONS_NONE, &context);
-    todo_wine
     ok(SUCCEEDED(hr), "Failed to create device context, hr %#x.\n", hr);
     if (FAILED(hr))
     {

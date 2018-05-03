@@ -94,8 +94,40 @@ static HRESULT WINAPI d2d_device_CreateDeviceContext(
         ID2D1DeviceContext **deviceContext)
 {
     struct d2d_device *This = impl_from_ID2D1Device(iface);
-    FIXME("%p stub!\n", This);
-    return E_NOTIMPL;
+    struct d2d_device_context *object;
+    ID3D10Device *d3d_device;
+    HRESULT hr;
+
+    TRACE("This %p, options %#x\n", This, options);
+    if (deviceContext == NULL)
+        return E_POINTER;
+
+    if (FAILED(hr = IDXGIDevice_QueryInterface(This->dxgi_device,
+                    &IID_ID3D10Device, (void **)&d3d_device)))
+    {
+        WARN("Failed to query d3d device, hr %#x.\n", hr);
+        return hr;
+    }
+
+    if (!(object = HeapAlloc(GetProcessHeap(), HEAP_ZERO_MEMORY, sizeof(*object))))
+    {
+        ID3D10Device_Release(d3d_device);
+        return E_OUTOFMEMORY;
+    }
+
+    hr = d2d_device_context_init(object, iface, options, d3d_device);
+    ID3D10Device_Release(d3d_device);
+    if (FAILED(hr))
+    {
+        HeapFree(GetProcessHeap(), 0, object);
+        WARN("Failed to create device context, hr %#x.\n", hr);
+        return hr;
+    }
+
+    *deviceContext = &object->ID2D1DeviceContext_iface;
+    TRACE("Created device context %p.\n", object);
+
+    return S_OK;
 }
 
 static HRESULT WINAPI d2d_device_CreatePrintControl(

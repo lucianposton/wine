@@ -154,6 +154,10 @@ struct d2d_d3d_render_target
 
 HRESULT d2d_d3d_create_render_target(ID2D1Factory *factory, IDXGISurface *surface, IUnknown *outer_unknown,
         const D2D1_RENDER_TARGET_PROPERTIES *desc, ID2D1RenderTarget **render_target) DECLSPEC_HIDDEN;
+HRESULT d2d_d3d_create_render_target_with_device(ID2D1Factory *factory,
+        ID3D10Device *device, IUnknown *outer_unknown,
+        const D2D1_RENDER_TARGET_PROPERTIES *desc,
+        ID2D1RenderTarget **render_target) DECLSPEC_HIDDEN;
 HRESULT d2d_d3d_render_target_create_rtv(ID2D1RenderTarget *render_target, IDXGISurface1 *surface) DECLSPEC_HIDDEN;
 
 struct d2d_wic_render_target
@@ -576,5 +580,17 @@ struct d2d_device
 };
 
 void d2d_device_init(struct d2d_device *This, ID2D1Factory1 *iface, IDXGIDevice *dxgiDevice) DECLSPEC_HIDDEN;
+
+struct d2d_device_context
+{
+    ID2D1DeviceContext ID2D1DeviceContext_iface;
+    LONG refcount;
+    ID2D1Device *device;
+    ID2D1RenderTarget *dxgi_target;
+};
+
+HRESULT d2d_device_context_init(struct d2d_device_context *This,
+        ID2D1Device *device_iface, D2D1_DEVICE_CONTEXT_OPTIONS options,
+        ID3D10Device *d3d_device) DECLSPEC_HIDDEN;
 
 #endif /* __WINE_D2D1_PRIVATE_H */
