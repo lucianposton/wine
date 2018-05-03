@@ -154,6 +154,10 @@ struct d2d_d3d_render_target
 
 HRESULT d2d_d3d_create_render_target(ID2D1Factory *factory, IDXGISurface *surface, IUnknown *outer_unknown,
         const D2D1_RENDER_TARGET_PROPERTIES *desc, ID2D1RenderTarget **render_target) DECLSPEC_HIDDEN;
+HRESULT d2d_d3d_create_render_target_with_device(ID2D1Factory *factory,
+        ID3D10Device *device, IUnknown *outer_unknown,
+        const D2D1_RENDER_TARGET_PROPERTIES *desc,
+        ID2D1RenderTarget **render_target) DECLSPEC_HIDDEN;
 HRESULT d2d_d3d_render_target_create_rtv(ID2D1RenderTarget *render_target, IDXGISurface1 *surface) DECLSPEC_HIDDEN;
 
 struct d2d_wic_render_target
@@ -326,7 +330,8 @@ HRESULT d2d_mesh_create(ID2D1Factory *factory, struct d2d_mesh **mesh) DECLSPEC_
 
 struct d2d_bitmap
 {
-    ID2D1Bitmap ID2D1Bitmap_iface;
+    ID2D1Bitmap1 ID2D1Bitmap_iface;
+
     LONG refcount;
 
     ID2D1Factory *factory;
@@ -335,10 +340,15 @@ struct d2d_bitmap
     D2D1_PIXEL_FORMAT format;
     float dpi_x;
     float dpi_y;
+    D2D1_BITMAP_OPTIONS options;
+    ID2D1ColorContext *color_context;
+    IDXGISurface *surface;
 };
 
 HRESULT d2d_bitmap_create(ID2D1Factory *factory, ID3D10Device *device, D2D1_SIZE_U size, const void *src_data,
         UINT32 pitch, const D2D1_BITMAP_PROPERTIES *desc, struct d2d_bitmap **bitmap) DECLSPEC_HIDDEN;
+HRESULT d2d_bitmap_create_shared_from_dxgi_surface(ID2D1Factory *factory, IDXGISurface *surface,
+        const D2D1_BITMAP_PROPERTIES1 *desc, ID3D10Device *target_device, struct d2d_bitmap **bitmap) DECLSPEC_HIDDEN;
 HRESULT d2d_bitmap_create_shared(ID2D1RenderTarget *render_target, ID3D10Device *device, REFIID iid, void *data,
         const D2D1_BITMAP_PROPERTIES *desc, struct d2d_bitmap **bitmap) DECLSPEC_HIDDEN;
 HRESULT d2d_bitmap_create_from_wic_bitmap(ID2D1Factory *factory, ID3D10Device *device, IWICBitmapSource *bitmap_source,
@@ -406,7 +416,7 @@ struct d2d_geometry
     ID2D1Geometry ID2D1Geometry_iface;
     LONG refcount;
 
-    ID2D1Factory *factory;
+    ID2D1Factory1 *factory;
 
     D2D_MATRIX_3X2_F transform;
 
@@ -470,10 +480,10 @@ struct d2d_geometry
     } u;
 };
 
-void d2d_path_geometry_init(struct d2d_geometry *geometry, ID2D1Factory *factory) DECLSPEC_HIDDEN;
+void d2d_path_geometry_init(struct d2d_geometry *geometry, ID2D1Factory1 *factory) DECLSPEC_HIDDEN;
 HRESULT d2d_rectangle_geometry_init(struct d2d_geometry *geometry,
-        ID2D1Factory *factory, const D2D1_RECT_F *rect) DECLSPEC_HIDDEN;
-void d2d_transformed_geometry_init(struct d2d_geometry *geometry, ID2D1Factory *factory,
+        ID2D1Factory1 *factory, const D2D1_RECT_F *rect) DECLSPEC_HIDDEN;
+void d2d_transformed_geometry_init(struct d2d_geometry *geometry, ID2D1Factory1 *factory,
         ID2D1Geometry *src_geometry, const D2D_MATRIX_3X2_F *transform) DECLSPEC_HIDDEN;
 struct d2d_geometry *unsafe_impl_from_ID2D1Geometry(ID2D1Geometry *iface) DECLSPEC_HIDDEN;
 
@@ -566,5 +576,27 @@ static inline const char *debug_d2d_rect_f(const D2D1_RECT_F *rect)
     if (!rect) return "(null)";
     return wine_dbg_sprintf("(%.8e,%.8e)-(%.8e,%.8e)", rect->left, rect->top, rect->right, rect->bottom );
 }
+
+struct d2d_device
+{
+    ID2D1Device ID2D1Device_iface;
+    LONG refcount;
+    ID2D1Factory1 *factory;
+    IDXGIDevice *dxgi_device;
+};
+
+void d2d_device_init(struct d2d_device *This, ID2D1Factory1 *iface, IDXGIDevice *dxgiDevice) DECLSPEC_HIDDEN;
+
+struct d2d_device_context
+{
+    ID2D1DeviceContext ID2D1DeviceContext_iface;
+    LONG refcount;
+    ID2D1Device *device;
+    ID2D1RenderTarget *dxgi_target;
+};
+
+HRESULT d2d_device_context_init(struct d2d_device_context *This,
+        ID2D1Device *device_iface, D2D1_DEVICE_CONTEXT_OPTIONS options,
+        ID3D10Device *d3d_device) DECLSPEC_HIDDEN;
 
 #endif /* __WINE_D2D1_PRIVATE_H */
