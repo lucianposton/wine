@@ -830,12 +830,19 @@ static HRESULT layout_resolve_fonts(struct dwrite_textlayout *layout)
         range = get_layout_range_by_pos(layout, run->descr.textPosition);
 
         if (run->sa.shapes == DWRITE_SCRIPT_SHAPES_NO_VISUAL) {
-            IDWriteFontCollection *collection;
+            if (range->collection) {
+                hr = create_matching_font(range->collection, range->fontfamily,
+                        range->weight, range->style, range->stretch, &font);
+            }
 
-            collection = range->collection ? range->collection : sys_collection;
+            if (range->collection == NULL || FAILED(hr))
+            {
+                hr = create_matching_font(sys_collection, range->fontfamily,
+                        range->weight, range->style, range->stretch, &font);
+            }
 
-            if (FAILED(hr = create_matching_font(collection, range->fontfamily, range->weight, range->style,
-                    range->stretch, &font))) {
+            if (FAILED(hr))
+            {
                 WARN("%s: failed to create matching font for non visual run, family %s, collection %p\n",
                         debugstr_rundescr(&run->descr), debugstr_w(range->fontfamily), range->collection);
                 break;

@@ -2961,6 +2961,50 @@ todo_wine
     ok(ref == 0, "factory not released, %u\n", ref);
 }
 
+static void test_CustomFontCollection_fallback(void)
+{
+    static const WCHAR strW[] = {'a','b','c','d',0};
+    static const WCHAR enusW[] = {'e','n','-','u','s',0};
+    IDWriteFontCollectionLoader *loader;
+    IDWriteTextFormat *format;
+    IDWriteTextLayout *layout;
+    IDWriteFactory *factory;
+    LONG font_coll_key = 1;
+    IDWriteFontCollection *font_collection;
+    DWRITE_TEXT_METRICS metrics;
+    HRESULT hr;
+
+    factory = create_factory();
+    loader = create_collection_loader();
+    hr = IDWriteFactory_RegisterFontCollectionLoader(factory, loader);
+    ok(hr == S_OK, "got 0x%08x\n", hr);
+
+    hr = IDWriteFactory_CreateCustomFontCollection(factory, loader,
+            &font_coll_key, sizeof(font_coll_key), &font_collection);
+    ok(hr == S_OK, "got 0x%08x\n", hr);
+
+    hr = IDWriteFactory_CreateTextFormat(factory, tahomaW, font_collection,
+            DWRITE_FONT_WEIGHT_NORMAL, DWRITE_FONT_STYLE_NORMAL,
+            DWRITE_FONT_STRETCH_NORMAL, 10.0, enusW, &format);
+    ok(hr == S_OK, "got 0x%08x\n", hr);
+
+    hr = IDWriteFactory_CreateTextLayout(factory, strW, 4, format,
+            1000.0, 1000.0, &layout);
+    ok(hr == S_OK, "got 0x%08x\n", hr);
+
+    hr = IDWriteTextLayout_GetMetrics(layout, &metrics);
+    ok(hr == S_OK, "got 0x%08x\n", hr);
+
+    hr = IDWriteFactory_UnregisterFontCollectionLoader(factory, loader);
+    ok(hr == S_OK, "got 0x%08x\n", hr);
+
+    IDWriteFontCollectionLoader_Release(loader);
+    IDWriteFontCollection_Release(font_collection);
+    IDWriteTextFormat_Release(format);
+    IDWriteTextLayout_Release(layout);
+    IDWriteFactory_Release(factory);
+}
+
 static HRESULT WINAPI fontfileloader_QueryInterface(IDWriteFontFileLoader *iface, REFIID riid, void **obj)
 {
     if (IsEqualIID(riid, &IID_IUnknown) || IsEqualIID(riid, &IID_IDWriteFontFileLoader))
@@ -8503,6 +8547,7 @@ START_TEST(font)
     test_system_fontcollection();
     test_ConvertFontFaceToLOGFONT();
     test_CustomFontCollection();
+    test_CustomFontCollection_fallback();
     test_CreateCustomFontFileReference();
     test_CreateFontFileReference();
     test_shared_isolated();
